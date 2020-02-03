@@ -1,43 +1,23 @@
 
-    /**START SCREEN */
-
 var states = {}, score = 0;
 
-//WebFontConfig = {
+WebFontConfig = {
+   
+    google: {
+      families: ['Marck Script']
+    }
 
-    //  'active' means all requested fonts have finished loading
-    //  We set a 1 second delay before calling 'createText'.
-    //  For some reason if we don't the browser cannot render the text the first time it's created.
-    //active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+};
 
-//     //  The Google Fonts we want to load (specify as many as you like in the array)
-//     google: {
-//       families: ['Fontdiner Swanky']
-//     }
+function createText(text, size) {
+        text.font = 'Marck Script';
+        text.fontSize = size;
+        text.stroke = 'black';
+        text.fill = '#ffffff';
+        text.strokeThickness = 3;
+}
 
-// };
-// var text = null;
-// function createText() {
-//     text = game.add.text(game.world.centerX, game.world.centerY, "- phaser -\nrocking with\ngoogle web fonts");
-//         text.anchor.setTo(0.5);
-
-//         text.font = 'Fontdiner Swanky';
-//         text.fontSize = 60;
-
-//         //  If we don't set the padding the font gets cut off
-//         //  Comment out the line below to see the effect
-//         text.padding.set(10, 16);
-
-//         // this.grd = this.text.context.createLinearGradient(0, 0, 0, this.text.canvas.height);
-//         // this.grd.addColorStop(0, '#8ED6FF');   
-//         // this.grd.addColorStop(1, '#004CB3');
-//         // this.text.fill = grd;
-
-//         text.align = 'center';
-//         text.stroke = '#000000';
-//         text.strokeThickness = 2;
-//         text.setShadow(5, 5, 'rgba(0,0,0,0.5)', 5);
-// }
+ /**START SCREEN */
 
 states.startScreen = function(game) {
     this.btn;
@@ -84,7 +64,6 @@ states.howToUseScreen.prototype = {
         this.load.image('BACK', 'assets/demo/EXAMPLE/GAME.png');
         this.load.image('btnGround', 'assets/demo/UI/HOWTOUSE.png');
         this.load.image('btnPlay', 'assets/demo/UI/OKAYBUTTOM.png');
-        //this.load.image('background', 'assets/demo/GAME/BACK.png');
     },
 
     create: function(){
@@ -102,9 +81,6 @@ states.howToUseScreen.prototype = {
     }
 }
 
-
-       
-
     /**MAIN SCREEM */
 
     states.mainScreen = function(game){
@@ -113,7 +89,6 @@ states.howToUseScreen.prototype = {
         this.platforms;
         this.ledge;
         this.cursors;
-       // this.score = 0;
         this.scoreText;
         this.bestScore;
         this.hitPlatform;
@@ -124,6 +99,8 @@ states.howToUseScreen.prototype = {
         this.dynamites;
         this.dynamite;
         this.style;
+        this.x;
+        this.y;
     }
 
     states.mainScreen.prototype = {
@@ -139,15 +116,11 @@ states.howToUseScreen.prototype = {
             this.load.image('obtacles', 'assets/demo/GAME/obtacles.png');
             this.load.image('arrowLeft', 'assets/demo/UI/ARROWLEFT.png');
             this.load.image('arrowRight', 'assets/demo/UI/ARROWRIGHT.png');
-            //this.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/desyrel.png', 'assets/fonts/bitmapFonts/desyrel.xml');
         }, 
 
         create: function() {
             this.physics.startSystem(Phaser.Physics.ARCADE);
             this.background = this.add.tileSprite(0, 0, 720, 1280, 'BACK');
-            // this.background.immovable = true
-            // this.background.moves = false
-            //this.physics.add.existing(this.background);
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             this.scale.pageAlignHorizontally = true;
             this.scale.pageAlignVertically = true;
@@ -209,8 +182,9 @@ states.howToUseScreen.prototype = {
             this.wrench = this.wrenches.create(360,700, 'wrench');
             this.wrench.body.immovable = true;
 
-            this.wrench = this.wrenches.create(600,20, 'wrench');
+            this.wrench = this.wrenches.create(630,5, 'wrench');
             this.wrench.body.immovable = true;
+            this.wrench.rotation = 0.4;
 
             this.dynamites = this.game.add.group();
             this.dynamites.enableBody = true;
@@ -232,17 +206,15 @@ states.howToUseScreen.prototype = {
             this.player.body.bounce.y = 0.2;
             this.player.body.gravity.y = 200;
 
-            //createText();
-            this.style = { fontSize: "65px", fill: "#ff0044", align: "center" };
-            this.scoreText = this.game.add.text(500, 0, '0', this.style);
-            this.bestScore = this.game.add.text(20, 0, '50', this.style);
+            this.scoreText = this.game.add.text(530, 0, '0');
+            createText(this.scoreText, 110);
+            this.bestScore = this.game.add.text(20, 0, '50');
+            createText(this.bestScore, 110);
             this.cursors = this.game.input.keyboard.createCursorKeys();
         }, 
 
         update: function() {
             this.hitPlatform = this.game.physics.arcade.collide(this.player, this.platforms);
-           //this. this.game.physics.arcade.collide(stars, platforms);
-        //    game.physics.arcade.overlap(player, stars, collectStar, null, this);
             this.player.body.velocity.x = 0;
             if (this.cursors.up.isDown)
             {
@@ -261,13 +233,11 @@ states.howToUseScreen.prototype = {
             {
                 this.player.body.velocity.x += -550;
                 this.player.animations.play('left');
-               // this.player.body.angularVelocity = -300;
             }
             else if (this.cursors.right.isDown)
             {
                 this.player.body.velocity.x += 550;
                 this.player.animations.play('right');
-                //this.player.body.angularVelocity = 300;
             }
             else
             {
@@ -280,10 +250,9 @@ states.howToUseScreen.prototype = {
             {
                 this.player.body.velocity.y = -800;
             }
-            //this.physics.arcade.collide(this.player, this.wrenches);
+
             this.physics.arcade.overlap(this.player, this.wrenches, this.collectWrench, null, this);
             this.physics.arcade.overlap(this.player, this.enemies, this.killEnem, null, this);
-            //this.physics.arcade.collide(this.player, this.dynamites);
             this.physics.arcade.overlap(this.player, this.dynamites, this.gameOver, null, this);
             this.screenWrap(this.player)
             this.background.tilePositionY += 10;
@@ -317,28 +286,20 @@ states.howToUseScreen.prototype = {
             this.scoreText.text =+ score;
         },
         killEnem: function(player, enem){
-            if (player.body.velocity.y > 0) { // kill enemies when hero is falling
+            if (player.body.velocity.y > 0) { 
                 enem.kill();
                 score += 10;
         
                 this.scoreText.text =+ score;
-                //this.sfx.stomp.play();
             }
-            else { // game over -> restart the game
-                //this.game.state.restart();
-                // if(this.physics.arcade.collide(this.player, this.enemies)){
-                //     (this.player.body.blocked);
-                // }
+            else { 
                 player.kill();
-                //this.score -= 30; 
-               // this.game.state.restart(true,false, this.goToStateMain);
                 this.goToStateMain();
             }
         },
         gameOver: function(player, dynamite) {
             player.kill();
             this.score -= 30; 
-           // this.game.state.restart(true,false, this.goToStateMain);
             this.goToStateMain();
         },
         goToStateMain: function(){
@@ -356,6 +317,8 @@ states.restartScreen = function(game) {
     this.text;
     this.scoreText;
     this.score;
+    this.bestScore;
+    this.wrench;
 }
 
 states.restartScreen.prototype = {
@@ -364,7 +327,6 @@ states.restartScreen.prototype = {
         this.load.image('btnGround', 'assets/demo/UI/RESTART.png');
         this.load.image('btnPlay', 'assets/demo/UI/RESTARTBUTTOM.png');
         this.load.image('wrench', 'assets/demo/GAME/wrench.png');
-        //this.load.image('background', 'assets/demo/GAME/BACK.png');
     },
 
     create: function(){
@@ -376,11 +338,16 @@ states.restartScreen.prototype = {
         this.btn.anchor.set(0.5);
         this.ok = this.add.sprite(game.world.width*0.5, game.world.height-530, 'btnPlay');
         this.ok.anchor.set(0.5);
-        this.text = this.game.add.text(game.world.width-500, game.world.height-710, '50', {  fontSize: '70px', fill: '#000' });
+        this.text = this.game.add.text(game.world.width-500, game.world.height-710, '50');
         this.text.anchor.set(0.5);
-        this.add.text(470, 600, '50', {  fontSize: '70px', fill: '#000' });
-        this.add.sprite(game.world.width-280, game.world.height-750, 'wrench');
-        this.scoreText = this.game.add.text(360, 525, score, {  fontSize: '70px', fill: '#000' })
+        createText(this.text, 90);
+        this.bestScore = this.add.text(470, 580, '50');
+        createText(this.bestScore, 90);
+        this.wrench = this.add.sprite(game.world.width-260, game.world.height-770, 'wrench');
+        this.wrench.rotation = 0.6;
+        this.wrench.scale.setTo(0.8,0.8);
+        this.scoreText = this.game.add.text(370, 510, score);
+        createText(this.scoreText, 90);
         
     },
     goToStateMain: function(){
@@ -395,75 +362,4 @@ states.restartScreen.prototype = {
     game.state.start('startScreen');
     
     
-    
-//     var player;
-//     var platforms;
-//     var cursors;
-//     var stars;
-//     var score = 0;
-//     var scoreText;
-//     var bgTimer;
-
-// function create() { 
-
-  
-
-//     //  We will enable physics for any object that is created in this group
-    
-
-//     // Here we create the ground.
-   
-
-//     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-//     //ground.scale.setTo(0.5, 0.5);
-
-//     //  This stops it from falling away when you jump on it
-//    // ground.body.immovable = true;
-
-//     //  Now let's create two ledges
-    
-//     // The player and its settings
-    
-
-//     //  Our two animations, walking left and right.
-//    // player.animations.add('left',  10, true);
-//     //player.animations.add('right', 10, true);
-
-//     stars = game.add.group();
-
-//     //  We will enable physics for any star that is created in this group
-//     stars.enableBody = true;
-
-//     //  Here we'll create 12 of them evenly spaced apart
-//     for (var i = 0; i < 12; i++)
-//     {
-//         //  Create a star inside of the 'stars' group
-//         var star = stars.create(i * 70, 0, 'star');
-
-//         //  Let gravity do its thing
-//         star.body.gravity.y = 300;
-
-//         //  This just gives each star a slightly random bounce value
-//         star.body.bounce.y = 0.7 + Math.random() * 0.2;
-//     }
-
  
-    
-// }
-
-// function update() {
-
-//     //  Collide the player and the stars with the platforms
-    
-
-// }
-
-
-
-// function render() {
-
-//     game.debug.cameraInfo(game.camera, 32, 32);
-
-// }
-    
-//};
