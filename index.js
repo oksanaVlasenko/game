@@ -96,11 +96,9 @@ states.howToUseScreen.prototype = {
         this.enem;
         this.wrenches;
         this.wrench;
+        this.mainWrench;
         this.dynamites;
         this.dynamite;
-        this.style;
-        this.x;
-        this.y;
     }
 
     states.mainScreen.prototype = {
@@ -182,9 +180,10 @@ states.howToUseScreen.prototype = {
             this.wrench = this.wrenches.create(360,700, 'wrench');
             this.wrench.body.immovable = true;
 
-            this.wrench = this.wrenches.create(630,5, 'wrench');
-            this.wrench.body.immovable = true;
-            this.wrench.rotation = 0.4;
+            this.mainWrench = this.wrenches.create(630,5, 'wrench');
+            this.mainWrench.body.immovable = true;
+            this.mainWrench.rotation = 0.4;
+           
 
             this.dynamites = this.game.add.group();
             this.dynamites.enableBody = true;
@@ -206,15 +205,16 @@ states.howToUseScreen.prototype = {
             this.player.body.bounce.y = 0.2;
             this.player.body.gravity.y = 200;
 
-            this.scoreText = this.game.add.text(530, 0, '0');
-            createText(this.scoreText, 110);
+            this.scoreText = this.game.add.text(525, 0, '0');
+            createText(this.scoreText, 105);
             this.bestScore = this.game.add.text(20, 0, '50');
-            createText(this.bestScore, 110);
+            createText(this.bestScore, 105);
             this.cursors = this.game.input.keyboard.createCursorKeys();
         }, 
 
         update: function() {
             this.hitPlatform = this.game.physics.arcade.collide(this.player, this.platforms);
+            this.physics.arcade.collide(this.player, this.mainWrench);
             this.player.body.velocity.x = 0;
             if (this.cursors.up.isDown)
             {
@@ -292,14 +292,15 @@ states.howToUseScreen.prototype = {
         
                 this.scoreText.text =+ score;
             }
-            else { 
+            else if (this.physics.arcade.collide(this.player, this.enemies)) { 
                 player.kill();
                 this.goToStateMain();
-            }
+            } 
+            
         },
         gameOver: function(player, dynamite) {
             player.kill();
-            this.score -= 30; 
+           // this.score -= 30; 
             this.goToStateMain();
         },
         goToStateMain: function(){
