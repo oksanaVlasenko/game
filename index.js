@@ -99,6 +99,10 @@ states.howToUseScreen.prototype = {
         this.mainWrench;
         this.dynamites;
         this.dynamite;
+        this.eat;
+        this.sandwich;
+        this.obtacles;
+        this.obtacle;
     }
 
     states.mainScreen.prototype = {
@@ -125,59 +129,51 @@ states.howToUseScreen.prototype = {
             this.world.setBounds(0, 0, 720, 1280);  
             this.platforms = this.game.add.group();
             this.platforms.enableBody = true;
-            this.ledge = this.platforms.create(170, 120, 'ground');
-            this.ledge.body.immovable = true;
-            this.ledge.scale.setTo(1, 0.8);
 
-            this.ledge = this.platforms.create(-370, 330, 'ground');
+            this.ledge = this.platforms.create(170, 100, 'ground');
             this.ledge.body.immovable = true;
-            this.ledge.scale.setTo(1, 0.8);
+
+            this.ledge = this.platforms.create(-370, 310, 'ground');
+            this.ledge.body.immovable = true;
             
-            this.ledge = this.platforms.create(480, 330, 'ground');
+            this.ledge = this.platforms.create(480, 310, 'ground');
             this.ledge.body.immovable = true;
-            this.ledge.scale.setTo(1, 0.8);
             
-            this.ledge = this.platforms.create(530, 560, 'ground');
-            this.ledge.body.immovable = true;
-            this.ledge.scale.setTo(1, 0.8);
+            this.ledge = this.platforms.create(530, 530, 'ground');
+            this.ledge.body.immovable = true; 
 
-            this.ledge = this.platforms.create(-140, 560, 'ground');
+            this.ledge = this.platforms.create(-140, 530, 'ground');
             this.ledge.body.immovable = true;
-            this.ledge.scale.setTo(1, 0.8);
 
-            this.ledge = this.platforms.create(230, 780, 'ground');
+            this.ledge = this.platforms.create(230, 750, 'ground');
             this.ledge.body.immovable = true;
-            this.ledge.scale.setTo(1, 0.8);
             
-            this.ledge = this.platforms.create(-290, 1020, 'ground');
+            this.ledge = this.platforms.create(-290, 970, 'ground');
             this.ledge.body.immovable = true;
-            this.ledge.scale.setTo(1, 0.8);
 
-            this.ledge = this.platforms.create(530, 1020, 'ground');
+            this.ledge = this.platforms.create(530, 970, 'ground');
             this.ledge.body.immovable = true;
-            this.ledge.scale.setTo(1, 0.8);
 
-            this.ledge = this.platforms.create(150, 1230, 'ground');
+            this.ledge = this.platforms.create(150, 1180, 'ground');
             this.ledge.body.immovable = true;
-            this.ledge.scale.setTo(1, 0.9);
 
-            this.add.sprite(250, 55, 'boxtools');
+            this.add.sprite(250, 35, 'boxtools');
 
             this.enemies = this.game.add.group();
             this.enemies.enableBody = true;
 
-            this.enem = this.enemies.create(120, 460, 'enemies');
+            this.enem = this.enemies.create(120, 410, 'enemies');
             this.enem.body.immovable = true;
-            this.enem.scale.setTo(0.8,0.8);
 
-            this.enem = this.enemies.create(550, 920, 'enemies');
+
+            this.enem = this.enemies.create(550, 850, 'enemies');
             this.enem.body.immovable = true;
-            this.enem.scale.setTo(0.8,0.8);
+
 
             this.wrenches = this.game.add.group();
             this.wrenches.enableBody = true;
 
-            this.wrench = this.wrenches.create(360,700, 'wrench');
+            this.wrench = this.wrenches.create(360,680, 'wrench');
             this.wrench.body.immovable = true;
 
             this.mainWrench = this.wrenches.create(630,5, 'wrench');
@@ -189,21 +185,36 @@ states.howToUseScreen.prototype = {
             this.dynamites.enableBody = true;
 
 
-            this.dynamite = this.dynamites.create(600, 460, 'dynamite');
+            this.dynamite = this.dynamites.create(600, 440, 'dynamite');
             this.dynamite.body.immovable = true;
+
+            this.eat = this.game.add.group();
+            this.eat.enableBody = true;
+
+            this.sandwich =  this.eat.create(400, 1110, 'sandwich');
+            this.sandwich.body.immovable = true;
+
+            this.obtacles = this.game.add.group();
+            this.obtacles.enableBody = true;
            
-            this.add.sprite(250, 1160, 'obtacles');
-            this.add.sprite(400, 1160, 'sandwich');
+            this.obtacle = this.obtacles.create(250, 1110, 'obtacles');
+            this.obtacle.body.immovable = true;
+            
             this.add.sprite(20, 1100, 'arrowLeft');
             this.add.sprite(550, 1100, 'arrowRight');
 
             this.player = this.game.add.sprite(500, this.game.world.height - 1250,  'dude');
-            this.player.scale.setTo(0.8, 0.8);
+
             
             this.game.physics.arcade.enable(this.player);
            
             this.player.body.bounce.y = 0.2;
             this.player.body.gravity.y = 200;
+            this.player.body.collideWorldBounds = true;
+            this.physics.arcade.checkCollision.left   = false;
+            this.physics.arcade.checkCollision.right  = false;
+            this.physics.arcade.checkCollision.top    = true;
+            this.physics.arcade.checkCollision.bottom = true;
 
             this.scoreText = this.game.add.text(525, 0, '0');
             createText(this.scoreText, 105);
@@ -215,11 +226,13 @@ states.howToUseScreen.prototype = {
         update: function() {
             this.hitPlatform = this.game.physics.arcade.collide(this.player, this.platforms);
             this.physics.arcade.collide(this.player, this.mainWrench);
+            this.physics.arcade.collide(this.player, this.obtacle);
             this.player.body.velocity.x = 0;
             if (this.cursors.up.isDown)
             {
                 this.camera.y -= 4;
                 this.physics.arcade.accelerationFromRotation(this.player.rotation, 200, this.player.body.acceleration);
+                
             }
             else 
             {
@@ -228,6 +241,7 @@ states.howToUseScreen.prototype = {
             if (this.cursors.down.isDown)
             {
                 this.camera.y += 4;
+               
             }
             if (this.cursors.left.isDown)
             {
@@ -254,6 +268,7 @@ states.howToUseScreen.prototype = {
             this.physics.arcade.overlap(this.player, this.wrenches, this.collectWrench, null, this);
             this.physics.arcade.overlap(this.player, this.enemies, this.killEnem, null, this);
             this.physics.arcade.overlap(this.player, this.dynamites, this.gameOver, null, this);
+            this.physics.arcade.overlap(this.player, this.eat, this.eatSandwich, null, this);
             this.screenWrap(this.player)
             this.background.tilePositionY += 10;
         },
@@ -266,30 +281,28 @@ states.howToUseScreen.prototype = {
             else if (sprite.x > game.width)
             {
                 sprite.x = 0;
-            }
-        
-            if (sprite.y < 0)
-            {
-                sprite.y = game.height;
-            }
-            else if (sprite.y > game.height)
-            {
-                sprite.y = 0;
-            }
+            }          
         
         }, 
         collectWrench: function(player, wrench) {
             wrench.kill();
 
-            score += 20;
+            score += 10;
         
+            this.scoreText.text =+ score;
+        },
+        eatSandwich: function(player, sandwich){
+            sandwich.kill();
+
+            score += 5;
+
             this.scoreText.text =+ score;
         },
         killEnem: function(player, enem){
             if (player.body.velocity.y > 0) { 
                 enem.kill();
-                score += 10;
-        
+                score += 5;
+                this.physics.arcade.collide(this.player, this.mainWrench);
                 this.scoreText.text =+ score;
             }
             else if (this.physics.arcade.collide(this.player, this.enemies)) { 
@@ -299,8 +312,7 @@ states.howToUseScreen.prototype = {
             
         },
         gameOver: function(player, dynamite) {
-            player.kill();
-           // this.score -= 30; 
+            player.kill(); 
             this.goToStateMain();
         },
         goToStateMain: function(){
@@ -355,6 +367,7 @@ states.restartScreen.prototype = {
         this.state.start('mainScreen');
     }
 }
+
     var game = new Phaser.Game(720, 1280, Phaser.AUTO, '');
     game.state.add('startScreen', states.startScreen);
     game.state.add('mainScreen', states.mainScreen);
